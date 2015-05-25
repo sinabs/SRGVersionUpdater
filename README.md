@@ -3,9 +3,7 @@
 [![License](https://img.shields.io/cocoapods/l/SRGVersionUpdater.svg?style=flat)](https://github.com/kazu0620/SRGVersionUpdater)
 [![Platform](https://img.shields.io/cocoapods/p/SRGVersionUpdater.svg?style=flat)](https://github.com/kazu0620/SRGVersionUpdater)
 
-Though you improved wonderfully your app, some users doesn't upgrade your app and continue to use old version. That's tragedy. SRGVersionUpdater can solve this problem. SRGVersionUpdater can show alert view about update infomation and force users to launch App Store and download new version app.
-
-The installation is very simple and easy. On client side all you need is only to write a code in 3 lines. And Even if you don't have knowledge in a server side programming, you can very easily setup if you have account of Dropbox, Google Drive or other hosting services.
+[SRGVersionUpdater](https://github.com/kazu0620/SRGVersionUpdater) fork, add remote customAlertBody,replace AFNetworking to ASIHTTPRequest and remove SRGVersionUpdater.bundle
 
 ##Screenshot
 ![](https://dl.dropboxusercontent.com/u/461628/SRGVersionUpdater.png)
@@ -15,7 +13,7 @@ The installation is very simple and easy. On client side all you need is only to
 
 #### 1. Upload a JSON file
 Upload a JSON file below. It is OK to upload to public folder of Dropbox, GoogleDrive, or other free hosting services.
-[Example JSON file](https://github.com/kazu0620/SRGVersionUpdater/raw/master/Example/app_version.json)
+[Example JSON file](https://github.com/sinabs/SRGVersionUpdater/raw/master/Example/app_version.json)
 
 ```json
 {"required_version":"2.0.0","type":"force","update_url":"https://itunes.apple.com/jp/app/idxxxxxxxxxx?mt="}
@@ -36,7 +34,7 @@ Upload a JSON file below. It is OK to upload to public folder of Dropbox, Google
 Install SRGVersionUpdater to your project with [CocoaPods](http://cocoapods.org) by adding the following to your Podfile:
 
 ``` ruby
-pod 'SRGVersionUpdater', "0.0.2"
+pod 'SRGVersionUpdater', "0.0.2", :git => 'https://github.com/sinabs/SRGVersionUpdater'
 ```
 
 At last, Open up the AppDelegate.m and edit application:didFinishLaunchingWithOptions: to be like so:

@@ -8,30 +8,25 @@
 
 #import "SRGVersionUpdater.h"
 #import "UIAlertView+BlocksKit.h"
-#import "AFHTTPRequestOperationManager.h"
+#import "ASIHTTPRequest.h"
 
 @implementation SRGVersionUpdater {
     NSDictionary *versionInfo;
 }
 
-#ifndef SRGVersionUpdaterLocalizedStrings
-#define SRGVersionUpdaterLocalizedStrings(key) \
-NSLocalizedStringFromTableInBundle(key, @"SRGVersionUpdater", [NSBundle bundleWithPath:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"SRGVersionUpdater.bundle"]], nil)
-#endif
 
 - (void) executeVersionCheck {
-   NSAssert(_endPointUrl, @"Set EndPointUrl Before Execute Check");
+    NSAssert(_endPointUrl, @"Set EndPointUrl Before Execute Check");
     
-   AFHTTPRequestOperationManager* manager = [AFHTTPRequestOperationManager manager];
-   manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"text/plain",@"application/json",nil];
-   [manager GET:_endPointUrl parameters:nil
-       success:^(AFHTTPRequestOperation *operation, id responseObject) {
-           versionInfo = responseObject;
-           [self showUpdateAnnounceIfNeeded];
-       } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-           NSLog(@"Request Operation Error! %@", error);
-       }
-   ];
+    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:_endPointUrl]];
+    [request setCompletionBlock:^{
+        versionInfo = [NSJSONSerialization JSONObjectWithData:[request responseData] options:NSJSONReadingAllowFragments error:nil];
+        [self showUpdateAnnounceIfNeeded];
+    }];
+    [request setFailedBlock:^{
+        NSLog(@"Request Operation Error!");
+    }];
+    [request startAsynchronous];
 }
 
 - (void) showUpdateAnnounceIfNeeded {
@@ -44,6 +39,7 @@ NSLocalizedStringFromTableInBundle(key, @"SRGVersionUpdater", [NSBundle bundleWi
 - (BOOL) isVersionUpNeeded {
     NSString *currentVersion  = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     NSString *requiredVersion = versionInfo[@"required_version"];
+    _customAlertBody = [versionInfo objectForKey:@"update_text"];
     return ( [requiredVersion compare:currentVersion options:NSNumericSearch] == NSOrderedDescending );
 }
 
@@ -87,7 +83,7 @@ NSLocalizedStringFromTableInBundle(key, @"SRGVersionUpdater", [NSBundle bundleWi
 }
 
 - (NSString *) localizedStringWithFormat:(NSString *)format {
-    return SRGVersionUpdaterLocalizedStrings(format);
+    return NSLocalizedString(format,nil);
 }
 
 @end
