@@ -19,8 +19,9 @@
     NSAssert(_endPointUrl, @"Set EndPointUrl Before Execute Check");
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:_endPointUrl]];
+    __weak typeof(ASIHTTPRequest) *weakRequest = request;
     [request setCompletionBlock:^{
-        versionInfo = [NSJSONSerialization JSONObjectWithData:[request responseData] options:NSJSONReadingAllowFragments error:nil];
+        versionInfo = [NSJSONSerialization JSONObjectWithData:[weakRequest responseData] options:NSJSONReadingAllowFragments error:nil];
         [self showUpdateAnnounceIfNeeded];
     }];
     [request setFailedBlock:^{
